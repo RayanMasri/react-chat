@@ -1,0 +1,19 @@
+{
+    "name": "chat",
+    "version": "0.0.3",
+    "private": true,
+    "dependencies": {
+        "express": "*",
+        "lodash": "*",
+        "react": "*",
+        "react-dom": "*",
+        "react-icons": "*",
+        "react-scripts": "*",
+        "socket.io": "*",
+        "uuid": "*"
+    },
+    "scripts": {
+        "start": "node src/server/index.js",
+        "build": "react-scripts build"
+    }
+}
