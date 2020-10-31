@@ -1,20 +1,48 @@
 import React, { Component } from 'react';
+import Message from './components/Message.js';
 import io from 'socket.io-client';
 import './index.css';
 
 class App extends Component {
-    componentDidMount() {
-        const socket = io();
+    constructor(props) {
+        super(props);
+        this.state = {
+            messages: [],
+        };
+    }
 
-        socket.on('connect', () => {
-            console.log(socket.id);
+    componentDidMount() {
+        this.socket = io('http://localhost:4001/');
+        this.socket.on('message', (message) => {
+            this.setState({
+                messages: this.state.messages.concat([
+                    <Message
+                        message={message}
+                        key={this.state.messages.length}
+                    ></Message>,
+                ]),
+            });
         });
+    }
+
+    onType(event) {
+        if (event.which == 13) {
+            this.socket.emit('message', event.target.value);
+            event.target.value = '';
+            return;
+        }
     }
 
     render() {
         return (
-            <div className='app'>
-                <div>hi</div>
+            <div>
+                <div className='messages'>{this.state.messages}</div>
+                <div className='chat-box'>
+                    <input
+                        className='chat-input'
+                        onKeyPress={this.onType.bind(this)}
+                    ></input>
+                </div>
             </div>
         );
     }
