@@ -5,7 +5,7 @@ const io = require('socket.io')(server);
 
 const PORT = process.env.PORT || 4001;
 
-// app.use(express.static(__dirname + '/../../build'));
+app.use(express.static(__dirname + '/../../build'));
 
 io.on('connection', (socket) => {
     socket.on('message', (message) => {
