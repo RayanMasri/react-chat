@@ -12,7 +12,7 @@ class App extends Component {
     }
 
     componentDidMount() {
-        this.socket = io('http://localhost:4001/');
+        this.socket = io();
         this.socket.on('message', (message) => {
             this.setState({
                 messages: this.state.messages.concat([
