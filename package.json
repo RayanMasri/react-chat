@@ -5,8 +5,8 @@
     "dependencies": {
         "express": "*",
         "lodash": "*",
-        "react": "*",
-        "react-dom": "*",
+        "react": "^16.14.0",
+        "react-dom": "^16.4.0",
         "react-icons": "*",
         "react-scripts": "*",
         "socket.io": "*",
