@@ -1,6 +1,9 @@
 {
-  "main.css": "static/css/main.aba1ea2f.css",
-  "main.css.map": "static/css/main.aba1ea2f.css.map",
-  "main.js": "static/js/main.ac1d17d3.js",
-  "main.js.map": "static/js/main.ac1d17d3.js.map"
+  "main.css": "static/css/main.6a98962d.css",
+  "main.css.map": "static/css/main.6a98962d.css.map",
+  "main.js": "static/js/main.cd56e02d.js",
+  "main.js.map": "static/js/main.cd56e02d.js.map",
+  "static\\media\\read.svg": "static/media/read.2166b7c6.svg",
+  "static\\media\\received.svg": "static/media/received.52167df5.svg",
+  "static\\media\\sent.svg": "static/media/sent.5348df05.svg"
 }

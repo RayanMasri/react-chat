@@ -10,7 +10,7 @@
         "react-icons": "*",
         "react-scripts": "*",
         "socket.io": "*",
-        "uuid": "*"
+        "uuid": "^8.3.1"
     },
     "scripts": {
         "start": "node src/server/index.js",

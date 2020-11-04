@@ -64,6 +64,9 @@
         Ubuntu, Cantarell, Fira Sans, sans-serif;
 }
 
+.message > .message-text > .message-info > img {
+    display: none;
+}
 .you {
     margin-left: auto;
 }
@@ -74,6 +77,10 @@
 
 .you > .message-text > .message-sender {
     display: none;
+}
+
+.you > .message-text > .message-info > img {
+    display: block !important;
 }
 
 /* .message > * {
@@ -99,8 +106,12 @@
     word-wrap: break-word;
 
     max-width: 475px;
+    min-width: 50px;
     padding: 5.5px;
     font-size: 14px;
+
+    display: flex;
+    flex-direction: column;
 }
 
 .message-date {

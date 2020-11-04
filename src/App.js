@@ -9,37 +9,85 @@ class App extends Component {
         super(props);
         this.state = {
             messages: [],
+            waiting: [],
         };
         // this.field = React.createRef();
     }
 
     componentDidMount() {
-        // production
         this.socket = io();
-
         // this.socket = io('http://localhost:4001/');
 
         this.socket.on('message', (object) => {
+            // fire received event for message
+            if (object.object.id !== this.socket.id) {
+                this.socket.emit('chat.received', object.id);
+                if (document.hasFocus()) {
+                    console.log('focused');
+                    this.socket.emit('chat.read', object.id);
+                } else {
+                    this.setState({
+                        messages: this.state.messages,
+                        waiting: this.state.waiting.concat([object.id]),
+                    });
+                }
+            }
+
+            var reference = React.createRef();
             this.setState({
                 messages: this.state.messages.concat([
-                    <Message
-                        message={object.message}
-                        key={this.state.messages.length}
-                        you={object.id == this.socket.id}
-                        sender={object.sender}
-                    ></Message>,
+                    {
+                        element: (
+                            <Message
+                                message={object.object.message}
+                                key={this.state.messages.length}
+                                you={object.object.id === this.socket.id}
+                                sender={object.object.sender}
+                                ref={reference}
+                                id={object.id}
+                            ></Message>
+                        ),
+                        reference: reference,
+                    },
                 ]),
             });
         });
 
-        // event.target.getBoundingClientRect()
-        // this.field.current.style.width = this.field.current.value.length + 'ch';
-        // localStorage.getItem('user').length + 'ch';
+        this.socket.on('chat.received', (id) => {
+            const message = this.state.messages.find(
+                (message) => message.reference.current.props.id === id
+            );
+
+            if (message) {
+                message.reference.current.receive();
+            }
+        });
+
+        this.socket.on('chat.read', (id) => {
+            const message = this.state.messages.find(
+                (message) => message.reference.current.props.id === id
+            );
+
+            if (message) {
+                message.reference.current.read();
+            }
+        });
+
+        window.onfocus = () => {
+            this.state.waiting.map((id) => {
+                this.socket.emit('chat.read', id);
+            });
+            this.setState({
+                messages: this.state.messages,
+                waiting: [],
+            });
+        };
     }
 
     onSendMessage(event) {
         event.preventDefault();
 
+        // fire sent event for message
         this.socket.emit('message', {
             message: event.target['message-field'].value,
             id: this.socket.id,
@@ -56,7 +104,9 @@ class App extends Component {
         return (
             <div className='app'>
                 <div className='chat-panel'>
-                    <div className='messages'>{this.state.messages}</div>
+                    <div className='messages'>
+                        {this.state.messages.map((message) => message.element)}
+                    </div>
                     <div className='chat-box'>
                         <form onSubmit={this.onSendMessage.bind(this)}>
                             <input
