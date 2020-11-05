@@ -3,6 +3,8 @@ import Message from './components/Message.js';
 import Field from './components/Field.js';
 import io from 'socket.io-client';
 import './index.css';
+import data from 'emoji-mart/data/twitter.json';
+import { NimblePicker } from 'emoji-mart';
 
 class App extends Component {
     constructor(props) {
@@ -10,13 +12,27 @@ class App extends Component {
         this.state = {
             messages: [],
             waiting: [],
+            picking: false,
         };
+        this.nameField = React.createRef();
+        this.messages = React.createRef();
+        this.emojiToggle = React.createRef();
+        this.messageField = React.createRef();
+        this.name = localStorage.getItem('user');
         // this.field = React.createRef();
     }
 
     componentDidMount() {
         this.socket = io();
         // this.socket = io('http://localhost:4001/');
+        this.nameField.current.value = this.name;
+        this.emojiToggle.current.addEventListener('click', () => {
+            this.setState({
+                messages: this.state.messages,
+                waiting: this.state.waiting,
+                picking: !this.state.picking,
+            });
+        });
 
         this.socket.on('message', (object) => {
             // fire received event for message
@@ -51,6 +67,8 @@ class App extends Component {
                     },
                 ]),
             });
+
+            this.messages.current.scrollTop = this.messages.current.scrollHeight;
         });
 
         this.socket.on('chat.received', (id) => {
@@ -91,42 +109,63 @@ class App extends Component {
         this.socket.emit('message', {
             message: event.target['message-field'].value,
             id: this.socket.id,
-            sender: 'master',
+            sender: this.name,
         });
         event.target['message-field'].value = '';
     }
 
-    onChangeName(value) {
+    onChangeName(event) {
+        event.preventDefault();
+
+        const value = event.target['name-field'].value;
+
+        this.name = value;
         localStorage.setItem('user', value);
+        // localStorage.setItem('user', value);
+    }
+
+    addEmoji(emoji) {
+        this.messageField.current.value += `&#${emoji.unified};`;
     }
 
     render() {
         return (
             <div className='app'>
+                <NimblePicker
+                    set='twitter'
+                    data={data}
+                    onSelect={this.addEmoji.bind(this)}
+                    style={{
+                        display: this.state.picking ? 'block' : 'none',
+                    }}
+                ></NimblePicker>
                 <div className='chat-panel'>
-                    <div className='messages'>
+                    <div className='messages' ref={this.messages}>
                         {this.state.messages.map((message) => message.element)}
                     </div>
                     <div className='chat-box'>
+                        <div ref={this.emojiToggle}>Emoji</div>
                         <form onSubmit={this.onSendMessage.bind(this)}>
                             <input
                                 type='text'
                                 className='message-field'
                                 name='message-field'
+                                ref={this.messageField}
                                 autoComplete='off'
                                 placeholder='Type a message'
                             />
                         </form>
                     </div>
                 </div>
-                {/* <div className='user-panel'>
-                    <Field
-                        onSubmit={this.onChangeName.bind(this)}
-                        default={localStorage.getItem('user')}
+                <form onSubmit={this.onChangeName.bind(this)}>
+                    <input
+                        type='text'
                         name='name-field'
-                        autosize
+                        autoComplete='off'
+                        ref={this.nameField}
+                        placeholder='Change your name'
                     />
-                </div> */}
+                </form>
             </div>
         );
     }

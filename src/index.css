@@ -3,6 +3,8 @@
     flex-direction: column;
     justify-content: space-between;
 
+    overflow-y: scroll;
+
     background-color: #0d1418;
 
     position: fixed;
@@ -31,11 +33,13 @@
 .message-field {
     border-radius: 50px;
     padding: 10px;
+    width: 100%;
     background-color: #33383b;
     color: rgba(241, 241, 242, 0.95);
 
     border: none;
     outline: none;
+    box-sizing: border-box;
 }
 
 .message-field::placeholder {
